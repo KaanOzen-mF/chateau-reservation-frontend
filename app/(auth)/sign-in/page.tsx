@@ -28,6 +28,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useAuthStore } from "@/store/authStore";
 
 const signInSchema = z.object({
   email: z.string().email({ message: "Email is not valid" }),
@@ -40,6 +41,7 @@ export default function SignInPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
+  const loginAction = useAuthStore((state) => state.login);
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -59,8 +61,11 @@ export default function SignInPage() {
       console.log("Login Success response", response);
 
       if (response?.accessToken) {
-        localStorage.setItem("accessToken", response.accessToken);
-        toast.success("Login successful!");
+        // --- LocalStorage yerine Zustand store'daki login eylemini çağır ---
+        loginAction(response.accessToken); // Token'ı store'a gönder
+        // --------------------------------------------------------------------
+
+        toast.success("Login successfully...");
         router.push("/");
       } else {
         throw new Error("Login failed. No access token received.");
