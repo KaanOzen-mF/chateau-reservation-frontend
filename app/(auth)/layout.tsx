@@ -8,11 +8,9 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    // Örnek: Auth sayfalarının içeriğini dikey ve yatayda ortala,
-    // arka plana hafif bir gradient ekle.
     <main className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-50 via-orange-50 to-transparent dark:bg-gray-900">
       {children}
-      <Toaster richColors position="top-right" closeButton />
+      <Toaster richColors position="bottom-center" closeButton />
     </main>
   );
 }
