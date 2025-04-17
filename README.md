@@ -167,24 +167,101 @@ lib/
 
 **Usage:** Imported and used wherever the frontend needs to communicate with the backend API.
 
-```plaintext
-import apiClient from '@/lib/api';
-import { userSchema } from '@/schemas/userSchema'; // Assuming a Zod schema exists
+**Usage Example:**
+
+```typescript
+import apiClient from "@/lib/api";
+import { userSchema } from "@/schemas/userSchema"; // Assuming a Zod schema exists
 
 async function getUserProfile(token: string) {
-  const user = await apiClient<User>('/api/users/profile', {
-    method: 'GET',
+  const user = await apiClient<User>("/api/users/profile", {
+    method: "GET",
     token: token,
-    responseSchema: userSchema
+    responseSchema: userSchema,
   });
   return user;
 }
-
 ```
 
-- `store/`: Stores for Zustand state management (e.g., authStore).
-- `styles/`: Global CSS files.
-- `public/`: Static files (images, fonts, etc.).
+### `lib/auth.ts`
+
+**Purpose:** Defines TypeScript interfaces related to authentication data structures.
+
+**Contents:**
+
+- **`AuthResponse`:** Interface defining the expected structure of the login API response.
+  ```typescript
+  export interface AuthResponse {
+    accessToken: string;
+  }
+  ```
+
+### `lib/utils.ts`
+
+**Purpose:** Contains common utility functions.
+
+**Contents:**
+
+- **`cn`:** Helper function combining `clsx` and `tailwind-merge` for reliable conditional Tailwind CSS class merging.
+
+## `/store` Directory - Global State Management (Zustand)
+
+This directory holds the global state management stores implemented using Zustand.
+
+store/
+└── authStore.ts # Zustand store for authentication state
+
+### `store/authStore.ts`
+
+**Purpose:** Manages the global state related to user authentication using Zustand.
+
+**State (`AuthState`):**
+
+- `token: string | null`: Stores the JWT access token.
+- `isAuthenticated: boolean`: Boolean flag derived from token presence.
+- `user: User | null`: Holds authenticated user details (from `@/types/user`).
+
+**Actions (`AuthActions`):**
+
+- `setToken(token)`: Updates the token and `isAuthenticated` flag.
+- `setUser(user)`: Updates the user object.
+- `login(token)`: Sets token, sets `isAuthenticated` to `true`, resets user to `null`.
+- `logout()`: Clears token, `isAuthenticated`, and user.
+
+**Persistence:**
+
+- Uses Zustand's `persist` middleware.
+- **Storage:** `localStorage` via `createJSONStorage`.
+- **Key:** `"auth-token-storage"`.
+- **Partialization:** Only the `token` state is persisted.
+- **Hydration:** Token is rehydrated automatically; `AuthLayout` handles logic based on hydrated state.
+
+## `/types` Directory - Shared TypeScript Definitions
+
+This directory contains shared TypeScript interface and type definitions.
+
+types/
+└── user.ts # Defines the User interface
+
+### `types/user.ts`
+
+**Purpose:** Defines the structure for a `User` object.
+
+**Interface (`User`):** Describes the properties for user data.
+
+```typescript
+export interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+* `styles/`: Global CSS files.
+* `public/`: Static files (images, fonts, etc.).
 
 ## 🔗 Backend Connection
 
@@ -195,6 +272,8 @@ This frontend project communicates with the backend API located at:
 ---
 
 _This document should be updated as the project evolves._
+
+```
 
 ```
 
