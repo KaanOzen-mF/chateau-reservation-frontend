@@ -71,6 +71,7 @@ The main folder structure of the project is as follows:
 
 - `app/`: Next.js App Router pages and layouts.
   The project uses the Next.js App Router. The key files and folders within the `/app` directory are organized as follows:
+  ```plaintext
   app/
   ├── (auth)/ # Route Group for Authentication Pages
   │ ├── layout.tsx # Layout specific to auth pages
@@ -82,6 +83,7 @@ The main folder structure of the project is as follows:
   ├── page.tsx # Root page (Homepage: /)
   ├── globals.css # Global CSS styles
   └── favicon.ico # Application favicon
+  ```
   ## Root Files
 
 * **`app/layout.tsx`**: The main layout component that wraps all pages. It likely includes shared elements like HTML structure, body tags, and potentially global context providers.
