@@ -69,26 +69,29 @@ Ensure that the following software is installed on your local machine before run
 
 The main folder structure of the project is as follows:
 
-- `app/`: Next.js App Router pages and layouts.
-  The project uses the Next.js App Router. The key files and folders within the `/app` directory are organized as follows:
-  ```plaintext
-  app/
-  ├── (auth)/ # Route Group for Authentication Pages
-  │ ├── layout.tsx # Layout specific to auth pages
-  │ ├── sign-in/
-  │ │ └── page.tsx # Sign In page component (/sign-in)
-  │ └── sign-up/
-  │ └── page.tsx # Sign Up page component (/sign-up)
-  ├── layout.tsx # Root layout for the entire application
-  ├── page.tsx # Root page (Homepage: /)
-  ├── globals.css # Global CSS styles
-  └── favicon.ico # Application favicon
-  ```
-  ## Root Files
+## /app Directory Structure and Routing (Next.js App Router)
 
-* **`app/layout.tsx`**: The main layout component that wraps all pages. It likely includes shared elements like HTML structure, body tags, and potentially global context providers.
-* **`app/page.tsx`**: The component rendered for the root URL (`/`). This is the homepage of the application.
-* **`app/globals.css`**: Contains global styles applied throughout the application, often used with Tailwind CSS base styles and utilities.
+The project uses the Next.js App Router. The key files and folders within the `/app` directory are organized as follows:
+
+```plaintext
+app/
+├── (auth)/                  # Route Group for Authentication Pages
+│   ├── layout.tsx           # Layout specific to auth pages
+│   ├── sign-in/
+│   │   └── page.tsx         # Sign In page component (/sign-in)
+│   └── sign-up/
+│       └── page.tsx         # Sign Up page component (/sign-up)
+├── layout.tsx               # Root layout for the entire application
+├── page.tsx                 # Root page (Homepage: /)
+├── globals.css              # Global CSS styles
+└── favicon.ico              # Application favicon
+```
+
+## Root Files
+
+- **`app/layout.tsx`**: The main layout component that wraps all pages. It likely includes shared elements like HTML structure, body tags, and potentially global context providers.
+- **`app/page.tsx`**: The component rendered for the root URL (`/`). This is the homepage of the application.
+- **`app/globals.css`**: Contains global styles applied throughout the application, often used with Tailwind CSS base styles and utilities.
 
 ### Authentication Route Group (`/app/(auth)`)
 
@@ -136,10 +139,52 @@ The main folder structure of the project is as follows:
   - **UI**: Built using Shadcn/ui components (`Card`, `Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormMessage`, `Input`, `Button`).
 
 * `components/`: Reusable UI components (e.g., Button, Input, Forms).
-* `lib/`: Helper functions, utilities (e.g., `cn` function, `fetch` instance).
-* `store/`: Stores for Zustand state management (e.g., authStore).
-* `styles/`: Global CSS files.
-* `public/`: Static files (images, fonts, etc.).
+
+## `/lib` Directory - Utilities and Core Logic
+
+The `/lib` directory contains helper functions, core logic modules, and utility type definitions used across the application.
+
+```plaintext
+lib/
+├── api.ts       # Central API client function
+├── auth.ts      # Authentication related type definitions
+└── utils.ts     # General utility functions (e.g., className helper)
+```
+
+### `lib/api.ts`
+
+**Purpose:** Provides a centralized asynchronous function (`apiClient`) for making requests to the backend API.
+
+**Functionality:**
+
+- Built on top of the native Workspace API.
+- Reads the base URL for the API from the `NEXT_PUBLIC_API_BASE_URL` environment variable.
+- Sets default headers (`Content-Type: application/json`).
+- Automatically adds the `Authorization: Bearer <token>` header if a token is provided in the request options (useful for authenticated requests).
+- Handles API error responses, attempting to parse JSON error messages from the backend.
+- Supports optional response validation using `ZodSchema` passed in the `responseSchema` option. If validation fails, it throws an error.
+- Handles network errors and other exceptions during the fetch process.
+
+**Usage:** Imported and used wherever the frontend needs to communicate with the backend API.
+
+```plaintext
+import apiClient from '@/lib/api';
+import { userSchema } from '@/schemas/userSchema'; // Assuming a Zod schema exists
+
+async function getUserProfile(token: string) {
+  const user = await apiClient<User>('/api/users/profile', {
+    method: 'GET',
+    token: token,
+    responseSchema: userSchema
+  });
+  return user;
+}
+
+```
+
+- `store/`: Stores for Zustand state management (e.g., authStore).
+- `styles/`: Global CSS files.
+- `public/`: Static files (images, fonts, etc.).
 
 ## 🔗 Backend Connection
 
@@ -150,3 +195,7 @@ This frontend project communicates with the backend API located at:
 ---
 
 _This document should be updated as the project evolves._
+
+```
+
+```
